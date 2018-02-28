@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="sidebar-nav-fixed">
+                    <a href="{{ url_for('show_lanes') }}" style="color: aqua">Lanes</a>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>Planned Data for Lane {{ lane_id }}</h2>
+                    </div>
+                </div>
+                <table class="table table-active">
+                    <thead style="background-color: #080808;color: white">
+                        <tr>
+                            <th scope="col">LANE ID</th>
+                            <th scope="col">LOAD ID</th>
+                            <th scope="col">CARRIER ID</th>
+                            <th scope="col">Cost in $</th>
+                            <th scope="col">Carrier Options To Change</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for index,row in data.iterrows() %}
+                            <tr>
+                                <td>{{ row["Plan_Lane"] }}</td>
+                                <td>{{ row["Plan_Load"] }}</td>
+                                <td>{{ row["Plan_Carrier"] }}</td>
+                                <td>{{ row["Cost"] }}</td>
+                                <td>
+                                    <form class="form-inline" action="" method="post">
+                                        <select name="carrier">
+                                            {% for ca in carriers %}
+                                                <option value="carrierid">{{ ca }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn-primary btn-success">Submit</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

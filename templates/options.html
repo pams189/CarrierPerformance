@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid" style="margin-top:20px;">
+	<div class="row">
+        <div class="col-md-2">
+            <div class="sidebar-nav-fixed">
+                <a href="{{ url_for('show_lanes') }}" style="color: aqua">Lanes</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h1 class="text-center"><b>Carrier Rating Options</b></h1>
+            <div class="well" style="max-height: 300px;overflow: auto;">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="ETA" name="rating" value="ETA">
+                        <label class="form-check-label" for="ETA">ETA</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="FALLOUTS" name="rating" value="FALLOUTS">
+                        <label class="form-check-label" for="FALLOUTS">FALLOUTS</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="TENDERACCEPTANCE" name="rating" value="TENDERACCEPTANCE">
+                        <label class="form-check-label" for="TENDERACCEPTANCE">TENDER ACCEPTANCE</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="SERVICELEVELS" name="rating" value="SERVICELEVELS">
+                        <label class="form-check-label" for="SERVICELEVELS">SERVICE LEVELS</label>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-success" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+            {% if errors %}
+                <br>
+                  {% for error in errors %}
+                    <h1>{{ error }}</h1>
+                  {% endfor %}
+                  <br>
+            {% endif %}
+            {% if results %}
+                <h2>Carrier Rating Percentages</h2>
+                <br>
+                <div id="results">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                          <th>LANE</th>
+                          <th>No of Violations</th>
+                          <th>Carrier Name</th>
+                          <th>Loads Assigned(#)</th>
+                          <th>Performance Rating</th>
+                      </tr>
+                    </thead>
+                    {% for key,values in results.items() %}
+                        <tr>
+                            {% for val in values %}
+                                {% if loop.index == 2 %}
+                                    <td>{{ val }}</td>
+                                    <td>{{ key }}</td>
+                                {% else %}
+                                    <td>{{ val }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                  </table>
+                </div>
+            {% endif %}
+            {% if results %}
+                <ul id="container">
+                {% for plot_data,title in plot_url|zip(titles) %}
+                    {% if plot_data %}
+                        <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                            <img src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph">
+                        </a>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+ </div>
+    <script src="/static/lib/jquery-2.1.0.min.js"></script>
+    <script src="/static/js/jquery.swipebox.js"></script>
+    <script type="text/javascript">
+;( function( $ ) {
+
+	$( '.swipebox' ).swipebox();
+
+} )( jQuery );
+</script>
+{% endblock %}

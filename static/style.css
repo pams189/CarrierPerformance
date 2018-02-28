@@ -1,0 +1,52 @@
+body{
+    padding-top: 100px;
+}
+h3{
+    color: crimson;
+    font-family: Verdana;
+    font-size: medium;
+}
+
+h1 {
+    font-size: x-large;
+}
+
+
+.sidebar-nav-fixed {
+    width:10%;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    background-color: #111;
+    top: 73px;
+    bottom:0;
+}
+
+.sidebar-nav-fixed a {
+    padding: 4px 4px 4px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidebar-nav-fixed a:hover {
+    color: #f1f1f1;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+a:visited {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}

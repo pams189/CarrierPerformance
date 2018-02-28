@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="sidebar-nav-fixed">
+                <a href="#" style="color: aqua">Lanes</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            {% for i in lane_data %}
+                <h1 style="color: crimson;font-family: Verdana">LANES</h1>
+                <br>
+                <div id="results">
+                    <table class="table table-bordered">
+                    <thead style="background-color: #080808;color: white">
+                        <tr>
+                            <th>LANE ID</th>
+                            <th>Options</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td style="color: #080808; font-family: Verdana ">{{ i }}</td>
+                        <td>
+                            <form class="form-inline" action="{{ url_for('carrier_rating_options', lane_id=i) }}" method="post">
+                                <select name="data">
+                                    <option value="PLANDATA">Show Planned Data</option>
+                                    <option value="HISTORYDATA">Show Carrier Performance Rating</option>
+                                </select>
+                                <button type="submit" class="btn-primary btn-success">Submit</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

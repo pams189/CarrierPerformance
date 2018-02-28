@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="margin-top:20px;">
+	<div class="row">
+        <div class="col-md-6">
+            <h1 class="text-center"><b>Carrier Rating Options</b></h1>
+            <div class="well" style="max-height: 300px;overflow: auto;">
+                <form class="form-horizontal" action="" method="post">
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="ETA" name="rating" value="ETA">
+                        <label class="form-check-label" for="ETA">ETA</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="FALLOUT" name="rating" value="FALLOUT">
+                        <label class="form-check-label" for="FALLOUT">FALLOUT</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="TENDERACCEPTANCE" name="rating" value="TENDERACCEPTANCE">
+                        <label class="form-check-label" for="TENDERACCEPTANCE">TENDER ACCEPTANCE</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="filled-in form-check-input" id="SERVICELEVELS" name="rating" value="SERVICELEVELS">
+                        <label class="form-check-label" for="SERVICELEVELS">SERVICE LEVELS</label>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-success" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if errors %}
+    <div class="row">
+        <br>
+          {% for error in errors %}
+            <h1>{{ error }}</h1>
+          {% endfor %}
+          <br>
+    </div>
+    {% endif %}
+    <div class="row">
+        {% if results %}
+            <h2>Carrier Rating Percentages</h2>
+            <br>
+            <div id="results">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>LOAD</th>
+                    <th>No of Violations</th>
+                    <th>Carrier Name</th>
+                    <th>Performance Rating</th>
+                  </tr>
+                </thead>
+                {% for key,values in results.items() %}
+                  {% for valist in values %}
+                      {% if valist %}
+                        <tr>
+                         <td>{{ key }}</td>
+                            {% for val in valist %}
+                                <td>{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                      {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              </table>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
