@@ -1,0 +1,4 @@
+Flask
+flask_restplus
+numpy==1.14.0
+pandas==0.22.0

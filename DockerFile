@@ -1,0 +1,10 @@
+FROM python:3.6
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+ADD requirements /usr/src/app/requirements
+RUN pip install -r requirements
+ADD services/CarrierAPI.py /usr/src/app//CarrierAPI.py
+ADD runserver.py /usr/src/app/runserver.py
+ADD . /usr/src/app
+EXPOSE 5000
+CMD ["python", "CarrierAPI.py"]

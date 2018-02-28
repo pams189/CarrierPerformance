@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "CarrierRatingRanking",
+  "type": "object",
+  "properties":{
+	"LOAD":{
+		"type": "string"
+	}
+  },
+  "properties": {
+    "Violations": {
+      "type": "string"
+    },
+    "CarrierName": {
+      "type": "string"
+    },
+    "Difference in FALLOUT": {
+      "type": "string"
+    },
+	"Percentage": {
+      "type": "string"
+    },
+  },
+  "required": ["Violations", "CarrierName","Difference in FALLOUT","Percentage"]
+}

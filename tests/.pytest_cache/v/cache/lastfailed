@@ -1,0 +1,4 @@
+{
+  "CarrierAPITests.py::test_get_fallout_for_all_loads": true,
+  "CarrierAPITests.py::test_get_fallout_for_specific_load": true
+}

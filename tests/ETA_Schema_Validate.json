@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "CarrierRatingRanking",
+  "type": "string",
+  "properties": {
+  "LOAD":{
+		"type": "string"
+	},
+    "Violations": {
+      "type": "string"
+    },
+    "CarrierName": {
+      "type": "string"
+    },
+    "Difference in ETA": {
+      "type": "string"
+    },
+	"Percentage": {
+      "type": "string"
+    },
+  },
+  "required": ["LOAD","Violations", "CarrierName","Difference in ETA","Percentage"]
+}
