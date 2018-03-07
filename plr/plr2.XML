@@ -1,0 +1,19 @@
+<?xml version="1.0"?> 
+<!--OpName=processLoadRate, OpType=Request, PortType=TransportationManager--> 
+<CISDocument> 
+	<LoadRateData> 
+		<SystemLoadID>80197</SystemLoadID> 
+		<!--EquipmentTypeCode>Stri</EquipmentTypeCode--> 
+		<CarrierCode>PCAR_SLC1</CarrierCode> 
+		<!--ServiceCode>Stri</ServiceCode--> 
+	</LoadRateData> 
+	<IDsAreReferenceNumbersFlag>false</IDsAreReferenceNumbersFlag> 
+	<!--ReferenceNumberType>String</ReferenceNumberType--> 
+	<IgnoreChargeOverridesFlag>true</IgnoreChargeOverridesFlag> 
+	<!--ChargeOverrides--> 
+		<!--ApplyAPOptionEnumVal></ApplyAPOptionEnumVal--> 
+		<!--ManualOverrideUnits>0</ManualOverrideUnits--> 
+		<!--ChargeCode>Stri</ChargeCode--> 
+		<!--SystemStopID>String</SystemStopID--> 
+	<!--/ChargeOverrides--> 
+</CISDocument> 

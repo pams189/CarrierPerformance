@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid" style="margin-top:20px;">
+	<div class="row">
+        <div class="col-md-2">
+            <div class="sidebar-nav-fixed">
+                <a href="{{ url_for('show_lanes') }}" style="color: aqua">Lanes</a>
+            </div>
+        </div>
+        <div class="col-md-10">
+            <h3><a href="{{ url_for('show_planned_data',lane_id=values[0]) }}" style="color: #c9302c">Back to Planned Data List</a> </h3>
+            <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2>Data for load {{ values[1] }}</h2>
+                    </div>
+            </div>
+            <form action="{{ url_for('show_rate_changes_after_carrier',load_id=values[1], carrier_id=values[2],lane_id=values[0],cost=values[3]) }}" method="post" style="display: inline">
+                <table class="table table-active">
+                    <thead style="background-color: #080808;color: white">
+                        <tr>
+                            <th scope="col">LANE ID</th>
+                            <th scope="col">LOAD ID</th>
+                            <th scope="col">CARRIER ID</th>
+                            <th scope="col">Cost in $</th>
+                            <th scope="col">Change Carrier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for i in values %}
+                                <td>{{ i }}</td>
+                            {% endfor %}
+                            <td>
+                                <select name="carrier">
+                                    {% for ca in carriers %}
+                                        <option name="carrier" value="{{ ca }}">{{ ca }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="btn btn-primary btn-success" type="submit">Submit</button>
+            </form>
+            <form class="form-inline" action="{{ url_for('show_planned_data',lane_id=values[0]) }}" method="post" style="display: inline">
+                <button class="btn btn-primary btn-danger" type="submit">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

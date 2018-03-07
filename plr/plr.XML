@@ -1,0 +1,13 @@
+<?xml version="1.0"?> 
+<!--OpName=processLoadRate, OpType=Request, PortType=TransportationManager--> 
+<CISDocument> 
+	<LoadRateData> 
+		<SystemLoadID>80197</SystemLoadID> 
+	</LoadRateData> 
+	<IDsAreReferenceNumbersFlag>false</IDsAreReferenceNumbersFlag> 
+	<SkipRatingFlag>false</SkipRatingFlag> 
+	<SkipSavingResultsFlag>true</SkipSavingResultsFlag> 
+	<RateShopFlag>true</RateShopFlag> 
+	<IgnoreChargeOverridesFlag>true</IgnoreChargeOverridesFlag> 
+</CISDocument> 
+

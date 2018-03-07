@@ -14,39 +14,54 @@
                         <h2>Planned Data for Lane {{ lane_id }}</h2>
                     </div>
                 </div>
-                <table class="table table-active">
-                    <thead style="background-color: #080808;color: white">
+
+                <form action="{{ url_for('carrier_change') }}" method="post">
+                 <ul class="nav nav-pills">
+                     <li class="active"><button type="submit" class="btn btn-primary">Change Carrier</button></li>
+                     <li style="padding: 3px"><input id="myinput" type="text" placeholder="search"></li>
+                </ul>
+
+                <div style="top: 120px; height: 800px; overflow: auto;">
+                <table id="plandata" class="table table-active">
+                    <thead style="background-color: #080808;color: white;">
                         <tr>
+                            <th scope="col">Select</th>
                             <th scope="col">LANE ID</th>
                             <th scope="col">LOAD ID</th>
                             <th scope="col">CARRIER ID</th>
                             <th scope="col">Cost in $</th>
-                            <th scope="col">Carrier Options To Change</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="plantable">
                         {% for index,row in data.iterrows() %}
                             <tr>
+                                <td>
+                                    <input type="checkbox" id="carrieroption"
+                                           name="carrieroption" value="{{ row["Plan_Lane"],row["Plan_Load"],row["Plan_Carrier"],row["Cost"] }}">
+                                </td>
                                 <td>{{ row["Plan_Lane"] }}</td>
                                 <td>{{ row["Plan_Load"] }}</td>
                                 <td>{{ row["Plan_Carrier"] }}</td>
                                 <td>{{ row["Cost"] }}</td>
-                                <td>
-                                    <form class="form-inline" action="" method="post">
-                                        <select name="carrier">
-                                            {% for ca in carriers %}
-                                                <option value="carrierid">{{ ca }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <button type="submit" class="btn-primary btn-success">Submit</button>
-                                    </form>
-                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                </div>
+                 </form>
             </div>
         </div>
     </div>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#myinput").on("keyup", function() {
+            $(this).css({"background-color":"dimgrey", "color":"white"});
+            var value = $(this).val().toLowerCase();
+            $("#plantable tr").filter(function() {
+             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    </script>
 {% endblock %}

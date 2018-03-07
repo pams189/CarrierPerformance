@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import io
 import urllib.parse
 import base64
+import xmltodict
+from pymongo import MongoClient
+import re
 
 app = Flask(__name__,static_url_path='/static')
 app.jinja_env.filters['zip'] = zip
@@ -109,15 +112,63 @@ def carrier_rating_options(lane_id):
 
 @app.route('/show_planned_data/<lane_id>', methods=['GET', 'POST'])
 def show_planned_data(lane_id):
+    client = MongoClient()
+    db = client['CarrierRatingTable']
+    records = db.CarrierRatingTableETA.find()
+    data = pd.DataFrame.from_records(records)
+    data = data.dropna()
     settings.LANEID = lane_id
-    rootdir = os.path.dirname(os.path.realpath(__file__))
+    '''rootdir = os.path.dirname(os.path.realpath(__file__))
     csv_file = rootdir + "/CSVFILES/" + settings.CSVFILE
-    data = pd.read_csv(csv_file)
+    data = pd.read_csv(csv_file)'''
     data = data[data[settings.LANE] == settings.LANEID]
     carriers = list(set(data[settings.CARRIER]))
     show_data = data[['Plan_Lane','Plan_Load','Plan_Carrier','Cost']]
 
     return render_template('plan_data.html', lane_id=lane_id, data=show_data,carriers=carriers)
+
+@app.route('/show_rate_changes_after_carrier/<load_id>/<carrier_id>/<lane_id>/<cost>', methods=['GET', 'POST'])
+def show_rate_changes_after_carrier(load_id,carrier_id,lane_id,cost):
+    carrier_option = request.form.get("carrier")
+    '''rootdir = os.path.dirname(os.path.realpath(__file__))
+    bat_file = rootdir + "/plr/" + settings.BATFILE
+    os.system(bat_file)
+    out_file = rootdir + "/plr/" + settings.OUTFILE
+    with open(out_file) as fd:
+        result = xmltodict.parse(fd.read())'''
+    new_cost = int(cost)-10
+    return render_template('displaychanges.html',load_id=load_id,old_carrier_id=carrier_id,new_carrier_id=carrier_option,lane_id=lane_id,old_cost=cost,new_cost=new_cost)
+
+@app.route('/commit_changes/<load_id>/<old_carrier_id>/<lane_id>/<new_carrier_id>/<cost>',methods=['GET', 'POST'])
+def commit_changes(load_id,old_carrier_id,lane_id,new_carrier_id,cost):
+    client = MongoClient()
+    db = client['CarrierRatingTable']
+    record = db.CarrierRatingTableETA.find({'Plan_Lane': lane_id, 'Plan_Load': load_id, 'Plan_Carrier': old_carrier_id})
+    if record:
+        db.CarrierRatingTableETA.update({'Plan_Lane': lane_id, 'Plan_Load': load_id, 'Plan_Carrier': old_carrier_id}, {'$set':{'Plan_Carrier': new_carrier_id, 'Cost': cost}})
+    return redirect(url_for('show_planned_data',lane_id=lane_id))
+
+@app.route('/carrier_change',methods=['GET', 'POST'])
+def carrier_change():
+    values = request.form.get('carrieroption')
+    values = re.sub(r'[()]', '', values)
+    values = values.split(',')
+    load_data = []
+    for val in values:
+        val = re.sub(r'\'', '', val)
+        load_data.append(val.strip())
+    client = MongoClient()
+    db = client['CarrierRatingTable']
+    records = db.CarrierRatingTableETA.find()
+    data = pd.DataFrame.from_records(records)
+    data = data.dropna()
+
+    load_data = list(load_data)
+    settings.LANEID = load_data[0]
+    data = data[data[settings.LANE] == settings.LANEID]
+    carriers = list(set(data[settings.CARRIER]))
+
+    return render_template('carrier_change.html', values=load_data,carriers=carriers)
 
 if __name__ == '__main__':
     app.run(port=8080)
