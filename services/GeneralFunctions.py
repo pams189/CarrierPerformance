@@ -3,22 +3,22 @@ from services import root_dir
 from pymongo import MongoClient
 import pandas as pd
 import math
+from sklearn import linear_model
+from sklearn.svm import SVR
 
 def create_json_object_from_dict(in_dict):
     load = {}
     rankings_json = []
-    #carrier = {'Violations': None, 'CarrierName': None, 'Difference in ' + settings.INPUT.upper(): None, 'Percentage': None}
     carrier = {'LaneName': None, 'Violations': None, 'Mean':None, 'Count': None,'Performance Rating':None}
 
     for key, value in in_dict.items():
         load['CARRIER'] = key
         rankings_json.append(load)
-        carrier['LaneName'] = str(value[1])
-        carrier['Violations'] = str(value[0])
-        carrier['Mean'] = str(math.ceil(value[2]))
-        #carrier['Difference in ' + settings.INPUT.upper()] = str(value[2])
-        carrier['Count'] = str(value[4])
-        carrier['Performance Rating'] = str(value[3])
+        carrier['LaneName'] = str(value[settings.lane])
+        carrier['Violations'] = str(value[settings.mismatch])
+        carrier['Mean'] = str(math.ceil(value[settings.mean]))
+        carrier['Count'] = str(value[settings.count])
+        carrier['Performance Rating'] = str(value[settings.percentage])
         rankings_json.append(carrier)
         carrier = {}
         load = {}
@@ -29,9 +29,7 @@ def get_sorted_dict_from_data(loads):
     load_keys = dict()
     keys = loads.groups.keys()
     TIME_VALIDATE = False
-    '''for name, g in loads:
-        sf = name
-        load_keys.setdefault(sf, [])'''
+
     tmp_list = []
     for i in keys:
         lf = loads.get_group(i)
@@ -47,24 +45,24 @@ def get_sorted_dict_from_data(loads):
         else:
             mean_value = after_mismatch_eta
         tmp_list.append(mean_value)
-        tmp_list.append(math.ceil(((total_cnt - after_mismatch_eta) / total_cnt) * 100))
+        tmp_list.append(round(((total_cnt - after_mismatch_eta) / total_cnt) * 100))
         tmp_list.append(total_cnt)
         load_keys[i] = tmp_list
         tmp_list = []
 
+    load_keys = get_loads_after_predicted_values_from_svr_regression(load_keys,TIME_VALIDATE)
+
     if TIME_VALIDATE:
         sum_mean = 0
         for value in load_keys.values():
-            sum_mean = sum_mean + value[2]
+            sum_mean = sum_mean + value[settings.mean]
 
         for key, val in load_keys.items():
-            val[3] = math.ceil((1- (val[2]/sum_mean))*100)
+            val[settings.percentage] = round((1- (val[settings.mean]/sum_mean))*100)
             load_keys[key] = val
 
+
     sorted_loads = dict(sorted(load_keys.items(), key=lambda x: (x[1][3]), reverse=True))
-    '''print(load_keys)
-    for key, value in load_keys.items():
-        sorted_loads[key] = sorted(value, key=lambda x: (x[0], x[2]))'''
 
     return sorted_loads
 
@@ -84,12 +82,9 @@ def get_sorted_dict_from_specific_carrier_data(specific_carrier):
     tmp_list.append(mean_value)
     tmp_list.append(100)
     tmp_list.append(total_cnt)
-    #load_keys.setdefault(settings.LOADID, []).append(tmp_list)
     load_keys[settings.CARRIERID] = tmp_list
 
     sorted_loads = dict(sorted(load_keys.items(), key=lambda x: (x[1][3]), reverse=True))
-    '''for key, value in load_keys.items():
-        sorted_loads[key] = sorted(value, key=lambda x: (x[0], x[2]), reverse=True)'''
 
     return sorted_loads
 
@@ -113,3 +108,34 @@ def get_mongodb_collection(input):
             return records
     else:
         return None
+def get_loads_after_predicted_values_from_svr_regression(predicted_loads,TIME_VALIDATE):
+
+    svr_regression_data = pd.DataFrame.from_dict(predicted_loads, orient='index')
+    svr_regression_data.columns = ['mismatch', 'lane', 'mean', 'percentage', 'count']
+    target = pd.DataFrame(svr_regression_data.mismatch, columns=["mismatch"])
+
+    if not TIME_VALIDATE:
+        X = svr_regression_data[['count']]
+    else:
+        X = svr_regression_data[['count','mean']]
+        
+    y = target["mismatch"]
+
+    #lm = svr_model.svrRegression()
+    clf = SVR(kernel='rbf', C=1e3, gamma=0.1)
+    model = clf.fit(X, y)
+    predictions = clf.predict(X)
+    predict_values = []
+    for i in predictions:
+        predict_values.append(round(i))
+
+    keys = list(predicted_loads.keys())
+    count = 0
+
+    for val, pred in zip(predicted_loads.values(), predict_values):
+        val[settings.mismatch] = pred
+        val[settings.percentage] = round(((val[settings.count] - val[settings.mismatch]) / val[settings.count]) * 100)
+        predicted_loads[keys[count]] = val
+        count = count + 1
+
+    return predicted_loads
