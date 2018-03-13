@@ -1,0 +1,6 @@
+Flask
+numpy==1.14.0
+pandas==0.22.0
+pymongo==3.6.0
+pytest==3.4.0
+pyparsing==2.2.0
