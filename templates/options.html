@@ -51,6 +51,9 @@
                           <th>LANE</th>
                           <th>No of Violations</th>
                           <th>Carrier Name</th>
+                          {% if ETA_CONSIDER %}
+                            <th>Mean Time(in secs)</th>
+                          {% endif %}
                           <th>Loads Assigned(#)</th>
                           <th>Performance Rating</th>
                       </tr>

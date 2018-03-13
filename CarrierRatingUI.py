@@ -34,6 +34,7 @@ def carrier_rating_options(lane_id):
     errors = []
     plot_data = ""
     titles = ""
+    ETA_CONSIDER = False
     if request.method == "GET":
         return render_template('options.html')
     if request.method == "POST":
@@ -92,12 +93,15 @@ def carrier_rating_options(lane_id):
                     titles.append("Violations for "+opt_key+" #")
                     data['mean'] = pd.to_numeric(data['mean'])
                     if opt_key == "ETA":
+                        ETA_CONSIDER = True
                         data[['mean']].plot(kind='bar', title="Violations for "+opt_key+" (in secs)", legend=True, fontsize=12)
                         img1 = io.BytesIO()
                         plt.savefig(img1, format='png')
                         img1.seek(0)
                         plot_data.append(urllib.parse.quote(base64.b64encode(img1.read()).decode()))
                         titles.append("Violations for "+opt_key+" (in secs)")
+                    else:
+                        ETA_CONSIDER = False
 
                     data[['percentage']].plot(kind='bar', title=opt_key+" Carrier Percentages", legend=True, fontsize=12)
                     img2 = io.BytesIO()
@@ -106,9 +110,10 @@ def carrier_rating_options(lane_id):
                     plot_data.append(urllib.parse.quote(base64.b64encode(img2.read()).decode()))
                     titles.append(opt_key+" Carrier Percentages")
 
-            for key,values in results.items():
-                del values[2]
-        return render_template('options.html',errors=errors, results=results, plot_url=plot_data, titles=titles)
+            if not ETA_CONSIDER:
+                for key,values in results.items():
+                    del values[2]
+        return render_template('options.html',errors=errors, results=results, plot_url=plot_data, titles=titles, ETA_CONSIDER=ETA_CONSIDER)
 
 @app.route('/show_planned_data/<lane_id>', methods=['GET', 'POST'])
 def show_planned_data(lane_id):
