@@ -5,18 +5,18 @@
     <div class="row">
         <div class="col-md-2">
             <div class="sidebar-nav-fixed">
-                <a href="#" style="color: aqua">Lanes</a>
+                <a href="#" style="color: white">Lanes</a>
             </div>
         </div>
         <div class="col-md-10">
             {% for i in lane_data %}
-                <h1 style="color: crimson;font-family: Verdana">LANES</h1>
+                <h1 style="color: crimson;font-family: Verdana; font-weight: bold">Lanes</h1>
                 <br>
                 <div id="results">
                     <table class="table table-bordered">
                     <thead style="background-color: white;color: #00b0ff">
                         <tr>
-                            <th>LANE ID</th>
+                            <th>Lane</th>
                             <th>Options</th>
                         </tr>
                     </thead>
@@ -25,8 +25,8 @@
                         <td>
                             <form class="form-inline" action="{{ url_for('carrier_rating_options', lane_id=i) }}" method="post">
                                 <select name="data">
-                                    <option value="PLANDATA">Show Planned Data</option>
-                                    <option value="HISTORYDATA">Show Carrier Performance Rating</option>
+                                    <option value="PLANDATA">Planning Data</option>
+                                    <option value="HISTORYDATA">Carrier Performance Rating</option>
                                 </select>
                                 <button type="submit" class="btn-primary btn-success">Submit</button>
                             </form>

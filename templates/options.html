@@ -5,34 +5,16 @@
 	<div class="row">
         <div class="col-md-2">
             <div class="sidebar-nav-fixed">
-                <a href="{{ url_for('show_lanes') }}" style="color: aqua">Lanes</a>
+                <a href="{{ url_for('show_lanes') }}" style="color: white">Lanes</a>
             </div>
         </div>
         <div class="col-md-10">
-            <h1 class="text-center"><b>Carrier Rating Options</b></h1>
+            <h2 class="text-center"><b>Carrier Performance Rating Indicators(KPI's)</b></h2>
             <div class="well" style="max-height: 300px;overflow: auto;">
-                <form class="form-horizontal" action="" method="post">
-                    <div class="form-check">
-                        <input type="checkbox" class="filled-in form-check-input" id="ETA" name="rating" value="ETA">
-                        <label class="form-check-label" for="ETA">ETA</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="filled-in form-check-input" id="FALLOUTS" name="rating" value="FALLOUTS">
-                        <label class="form-check-label" for="FALLOUTS">FALLOUTS</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="filled-in form-check-input" id="TENDERACCEPTANCE" name="rating" value="TENDERACCEPTANCE">
-                        <label class="form-check-label" for="TENDERACCEPTANCE">TENDER ACCEPTANCE</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="filled-in form-check-input" id="SERVICELEVELS" name="rating" value="SERVICELEVELS">
-                        <label class="form-check-label" for="SERVICELEVELS">SERVICE LEVELS</label>
-                    </div>
-
-                    <div class="form-group">
-                        <button class="btn btn-primary btn-success" type="submit">Submit</button>
-                    </div>
-                </form>
+                <div class="text-dark"><i class="fa fa-check-square" aria-hidden="true"><span style="margin-left: 20px"></span>On Time Pickup/Delivery</i></div>
+                <div class="text-dark"><i class="fa fa-check-square" aria-hidden="true"><span style="margin-left: 20px"></span>Fallouts</i></div>
+                <div class="text-dark"><i class="fa fa-check-square" aria-hidden="true"><span style="margin-left: 20px"></span>Tender Acceptance</i></div>
+                <div class="text-dark"><i class="fa fa-check-square" aria-hidden="true"><span style="margin-left: 20px"></span>Service Levels</i></div>
             </div>
             {% if errors %}
                 <br>
@@ -42,17 +24,17 @@
                   <br>
             {% endif %}
             {% if results %}
-                <h2>Carrier Rating Percentages</h2>
+                <h2 style="padding-top: 30px">Carrier Performance Rating</h2>
                 <br>
                 <div id="results">
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                          <th>LANE</th>
-                          <th>No of Violations</th>
-                          <th>Carrier Name</th>
+                          <th>Lane</th>
+                          <th>No Of Violations</th>
+                          <th>Carrier</th>
                           {% if ETA_CONSIDER %}
-                            <th>Mean Time(in secs)</th>
+                            <th>Mean Time(In Secs)</th>
                           {% endif %}
                           <th>Loads Assigned(#)</th>
                           <th>Performance Rating</th>
@@ -74,14 +56,54 @@
                 </div>
             {% endif %}
             {% if results %}
+                <form class="form-inline" action="{{ url_for('update_planned_data', lane_id=lane_id, carrier_id=rating_carrier) }}" method="post" style="display: inline">
+                    <button class="btn btn-primary" type="submit">View Updated Solution</button>
+                </form>
+                <button id="charts" class="btn btn-primary" style="display: inline">View Charts</button>
+                <div class="container-fluid">
+                    <ul id="links" class="nav nav-pills" style="display: none; margin-top: 30px">
+                        <li id="ETA" class="active"><a href="#"><b>On Time Pickup/Delivery</b></a></li>
+                        <li id="Fallouts"  style="margin-left: 20px"><a href="#"><b>Fallouts</b></a></li>
+                        <li id="Tender"  style="margin-left: 20px"><a href="#"><b>Tender Acceptance</b></a></li>
+                        <li id="Service"  style="margin-left: 20px"><a href="#"><b>Service Levels</b></a></li>
+                        <li id="Overall" style="margin-left: 20px"><a href="#"><b>Overall</b></a></li>
+                  </ul>
+                </div>
                 <ul id="container">
+                <div class="row">
                 {% for plot_data,title in plot_url|zip(titles) %}
                     {% if plot_data %}
-                        <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
-                            <img src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph">
-                        </a>
+                        {% if loop.index%4 == 0 and loop.index < 5 %}
+                            </div><br><div class="row">
+                        {% else %}
+                            {% if loop.index%2 == 0 and loop.index > 5%}
+                                </div><br><div class="row">
+                            {% endif %}
+                        {% endif %}
+                        {% if loop.index < 4 %}
+                            <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                                <img id="ETA" src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph" style="display: none" width="500" height="300">
+                            </a>
+                        {% elif loop.index>=4 and loop.index<6 %}
+                            <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                                <img id="Fallouts" src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph" style="display: none" width="500" height="300">
+                            </a>
+                         {% elif loop.index>=6 and loop.index<8 %}
+                            <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                                <img id="Tender" src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph" style="display: none" width="500" height="300">
+                            </a>
+                        {% elif loop.index>=8 and loop.index<10 %}
+                            <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                                <img id="Service" src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph" style="display: none" width="500" height="300">
+                            </a>
+                         {% elif loop.index>=10 and loop.index<12 %}
+                            <a href="data:image/png;base64, {{ plot_data }}" class="swipebox" title="{{ title}}">
+                                <img id="Overall" src="data:image/png;base64, {{ plot_data }}" class="img-responsive" alt="graph" style="display: none" width="500" height="300">
+                            </a>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
+                </div>
                 </ul>
             {% endif %}
         </div>
@@ -95,5 +117,47 @@
 	$( '.swipebox' ).swipebox();
 
 } )( jQuery );
+
+$(document).ready(function(){
+    $("#charts").click(function(){
+        $("#links").toggle();
+        $("li#ETA").click(function(){
+        $("img#ETA").toggle();
+        $("img#Fallouts").hide();
+        $("img#Tender").hide();
+        $("img#Service").hide();
+        $("img#Overall").hide();
+    });
+    $("li#Fallouts").click(function(){
+        $("img#Fallouts").toggle();
+        $("img#ETA").hide();
+        $("img#Tender").hide();
+        $("img#Overall").hide();
+        $("img#Service").hide();
+    });
+    $("li#Tender").click(function(){
+        $("img#Tender").toggle();
+        $("img#Fallouts").hide();
+        $("img#ETA").hide();
+        $("img#Overall").hide();
+        $("img#Service").hide();
+    });
+    $("li#Overall").click(function(){
+        $("img#Overall").toggle();
+        $("img#Fallouts").hide();
+        $("img#Tender").hide();
+        $("img#ETA").hide();
+        $("img#Service").hide();
+    });
+    $("li#Service").click(function(){
+        $("img#Overall").hide();
+        $("img#Fallouts").hide();
+        $("img#Tender").hide();
+        $("img#ETA").hide();
+         $("img#Service").toggle();
+    });
+    });
+
+});
 </script>
 {% endblock %}

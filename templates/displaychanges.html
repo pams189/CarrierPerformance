@@ -6,23 +6,23 @@
     <div class="row">
             <div class="col-md-2">
                 <div class="sidebar-nav-fixed">
-                    <a href="{{ url_for('show_lanes') }}" style="color: aqua">Lanes</a>
+                    <a href="{{ url_for('show_lanes') }}" style="color: white">Lanes</a>
                 </div>
             </div>
             <div class="col-md-10">
-                <h3><a href="{{ url_for('show_planned_data',lane_id=lane_id) }}" style="color: #c9302c">Back to Planned Data List</a> </h3>
+                <a href="{{ url_for('show_planned_data',lane_id=lane_id, msg="Planning Data") }}" style="color: #c9302c">Back to Planned Data List</a>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h2>Old Data for load {{ load_id }}</h2>
+                        <h3>Data For Load {{ load_id }}</h3>
                     </div>
                 </div>
                 <table class="table table-active">
                     <thead style="background-color: white;color: #00b0ff">
                         <tr>
-                            <th scope="col">LANE ID</th>
-                            <th scope="col">LOAD ID</th>
-                            <th scope="col">CARRIER ID</th>
-                            <th scope="col">Cost in $</th>
+                            <th scope="col">Lane</th>
+                            <th scope="col">Load</th>
+                            <th scope="col">Carrier</th>
+                            <th scope="col">Cost($)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -36,16 +36,16 @@
                 </table>
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h2>New Data after carrier change for load {{ load_id }}</h2>
+                        <h3>After Change Load {{ load_id }}</h3>
                     </div>
                 </div>
                 <table class="table table-active">
                     <thead style="background-color: white;color: #00b0ff">
                         <tr>
-                            <th scope="col">LANE ID</th>
-                            <th scope="col">LOAD ID</th>
-                            <th scope="col">CARRIER ID</th>
-                            <th scope="col">Cost in $</th>
+                            <th scope="col">Lane</th>
+                            <th scope="col">Load</th>
+                            <th scope="col">Carrier</th>
+                            <th scope="col">Cost($)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -60,7 +60,7 @@
                 <form class="form-inline" action="{{ url_for('commit_changes',load_id=load_id,old_carrier_id=old_carrier_id,lane_id=lane_id,new_carrier_id=new_carrier_id,cost=new_cost) }}" method="post" style="display: inline">
                     <button class="btn btn-primary btn-success" type="submit">Commit</button>
                 </form>
-                <form class="form-inline" action="{{ url_for('show_planned_data',lane_id=lane_id) }}" method="post" style="display: inline">
+                <form class="form-inline" action="{{ url_for('show_planned_data',lane_id=lane_id, msg="Planning Data") }}" method="post" style="display: inline">
                     <button class="btn btn-primary btn-danger" type="submit">Cancel</button>
                 </form>
             </div>

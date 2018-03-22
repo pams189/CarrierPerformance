@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="sidebar-nav-fixed">
+                    <a href="{{ url_for('show_lanes') }}" style="color: white">Lanes</a>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>Updated Planning For Lane {{ lane_id }}</h3>
+                    </div>
+                </div>
+
+                <form action="{{ url_for('carrier_change') }}" method="post">
+                 <ul class="nav nav-pills">
+                     <li class="active"><button type="submit" class="btn btn-primary">Change Carrier</button></li>
+                     <li style="padding: 3px"><input id="myinput" type="text" placeholder="search"></li>
+                </ul>
+
+                <div style="top: 120px; height: 800px; overflow: auto;">
+                <table id="plandata" class="table table-active">
+                    <thead style="background-color: white;color: #00b0ff;">
+                        <tr>
+                            <th scope="col">Select</th>
+                            <th scope="col">Lane</th>
+                            <th scope="col">Load</th>
+                            <th scope="col">Old Carrier</th>
+                            <th scope="col">Old Cost($)</th>
+                            <th scope="col">New Carrier</th>
+                            <th scope="col">New Cost($)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="plantable">
+                        {% for index,row in data.iterrows() %}
+                            <tr>
+                                <td>
+                                    <input type="checkbox" id="carrieroption"
+                                           name="carrieroption" value="{{ row["lane"],row["load"],row["new_carrier"],row["new_cost"] }}">
+                                </td>
+                                <td>{{ row["lane"] }}</td>
+                                <td>{{ row["load"] }}</td>
+                                <td>{{ row["old_carrier"] }}</td>
+                                <td>{{ row["old_cost"] }}</td>
+                                <td>{{ row["new_carrier"] }}</td>
+                                <td>{{ row["new_cost"] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        $("#myinput").on("keyup", function() {
+            $(this).css({"background-color":"dimgrey", "color":"white"});
+            var value = $(this).val().toLowerCase();
+            $("#plantable tr").filter(function() {
+             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    </script>
+{% endblock %}
